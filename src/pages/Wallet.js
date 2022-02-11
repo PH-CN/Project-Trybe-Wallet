@@ -26,6 +26,7 @@ class Wallet extends React.Component {
     this.resetId();
     const response = await fetch(URL);
     const data = await response.json();
+    delete data.USDT;
     addCurrenciesToStore(data);
   }
 
@@ -37,6 +38,7 @@ class Wallet extends React.Component {
     const { addExpenseToStore } = this.props;
     const response = await fetch(URL);
     const json = await response.json();
+    delete json.USDT;
     this.addExchangeRates(json);
     addExpenseToStore(this.state);
     this.updateId();
@@ -64,7 +66,7 @@ class Wallet extends React.Component {
 
   render() {
     const { value } = this.state;
-    const { currencies } = this.props;
+    const { currencies, expenses } = this.props;
     const filteredCurrencies = Object.keys(currencies).filter((e) => e !== 'USDT');
     return (
       <>
@@ -144,8 +146,8 @@ class Wallet extends React.Component {
             Adicionar despesa
           </button>
         </section>
-        <section>
-          <table>
+        <table>
+          <thead>
             <tr>
               <th>Descrição</th>
               <th>Tag</th>
@@ -157,8 +159,32 @@ class Wallet extends React.Component {
               <th>Moeda de conversão</th>
               <th>Editar/Excluir</th>
             </tr>
-          </table>
-        </section>
+          </thead>
+          <tbody>
+            {expenses.map((expense) => (
+              <tr key={ expense.id }>
+                <td>{ expense.description }</td>
+                <td>{ expense.tag }</td>
+                <td>{ expense.method }</td>
+                <td>{ Number(expense.value).toFixed(2) }</td>
+                <td>{ expense.exchangeRates[expense.currency].name.split('/')[0] }</td>
+                <td>
+                  {
+                    Number(expense.exchangeRates[expense.currency].ask)
+                      .toFixed(2)
+                  }
+                </td>
+                <td>
+                  {
+                    (Number(expense.value) * expense.exchangeRates[expense.currency]
+                      .ask).toFixed(2)
+                  }
+                </td>
+                <td>Real</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </>
     );
   }
@@ -171,6 +197,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  expenses: state.wallet.expenses,
 });
 
 Wallet.propTypes = {

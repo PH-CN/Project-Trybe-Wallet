@@ -9,9 +9,12 @@ class Header extends React.Component {
       <header>
         <h2 data-testid="email-field">{userEmail}</h2>
         <h4 data-testid="total-field">
-          {expenses
-            .reduce((acc, expense, i) => acc + (
-              expense.value * expenses[i].exchangeRates[expense.currency].ask), 0)}
+          {
+            expenses
+              .reduce((acc, expense, i) => acc + (
+                expense.value * expenses[i].exchangeRates[expense.currency].ask), 0)
+              .toFixed(2)
+          }
         </h4>
         <h4 data-testid="header-currency-field">BRL</h4>
       </header>
