@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 
 class Header extends React.Component {
   render() {
-    const { userEmail, expenses, currencies } = this.props;
+    const { userEmail, expenses } = this.props;
     return (
       <header>
         <h2 data-testid="email-field">{userEmail}</h2>
         <h4 data-testid="total-field">
           {expenses
-            .reduce((acc, expense) => acc + (
-              expense.value * currencies[expense.currency].ask), 0)}
+            .reduce((acc, expense, i) => acc + (
+              expense.value * expenses[i].exchangeRates[expense.currency].ask), 0)}
         </h4>
         <h4 data-testid="header-currency-field">BRL</h4>
       </header>
