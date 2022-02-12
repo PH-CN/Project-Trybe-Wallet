@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { addCurrencies, addExpense } from '../actions';
+import { addCurrencies, addExpense, removeExpense } from '../actions';
 
 const URL = 'https://economia.awesomeapi.com.br/json/all';
 
@@ -66,7 +66,7 @@ class Wallet extends React.Component {
 
   render() {
     const { value } = this.state;
-    const { currencies, expenses } = this.props;
+    const { currencies, expenses, excludeExpense } = this.props;
     const filteredCurrencies = Object.keys(currencies).filter((e) => e !== 'USDT');
     return (
       <>
@@ -181,6 +181,15 @@ class Wallet extends React.Component {
                   }
                 </td>
                 <td>Real</td>
+                <td>
+                  <button
+                    data-testid="delete-btn"
+                    type="button"
+                    onClick={ () => excludeExpense(expense) }
+                  >
+                    Excluir
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -193,6 +202,7 @@ class Wallet extends React.Component {
 const mapDispatchToProps = (dispatch) => ({
   addExpenseToStore: (object) => dispatch(addExpense(object)),
   addCurrenciesToStore: (data) => dispatch(addCurrencies(data)),
+  excludeExpense: (expense) => dispatch(removeExpense(expense)),
 });
 
 const mapStateToProps = (state) => ({
